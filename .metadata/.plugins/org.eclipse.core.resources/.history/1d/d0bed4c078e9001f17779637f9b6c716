@@ -1,0 +1,15 @@
+package application;
+
+import db.DB;
+import model.entities.Departamento;
+
+public class Program {
+
+	public static void main(String[] args) {
+
+		Departamento dpt1 = new Departamento("TI", 1);
+		Departamento dpt2= new Departamento("TI", 1);
+		
+		dpt1.equals(dpt2);
+	}
+}

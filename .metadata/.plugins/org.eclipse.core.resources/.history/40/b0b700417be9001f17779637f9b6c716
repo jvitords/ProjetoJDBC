@@ -1,0 +1,29 @@
+package model.entities;
+
+import java.util.Date;
+
+public class Funcionario {
+
+	private int idDoFuncionario;
+	private String nomeDoFuncionario;
+	private String emailDoFuncionario;
+	private Date nascimentoDoFuncionario;
+	private Double salarioeDoFuncionario;
+	private Departamento departamentoDoFuncionario;
+	
+	public Funcionario() {
+	}
+	
+	public Funcionario(int idDoFuncionario, String nomeDoFuncionario, String emailDoFuncionario,
+			Date nascimentoDoFuncionario, Double salarioeDoFuncionario, Departamento departamentoDoFuncionario) {
+		this.idDoFuncionario = idDoFuncionario;
+		this.nomeDoFuncionario = nomeDoFuncionario;
+		this.emailDoFuncionario = emailDoFuncionario;
+		this.nascimentoDoFuncionario = nascimentoDoFuncionario;
+		this.salarioeDoFuncionario = salarioeDoFuncionario;
+		this.departamentoDoFuncionario = departamentoDoFuncionario;
+	}
+	
+	
+	
+}
