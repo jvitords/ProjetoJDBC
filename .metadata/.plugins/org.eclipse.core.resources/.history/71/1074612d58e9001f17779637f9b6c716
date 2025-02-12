@@ -1,0 +1,14 @@
+package application;
+
+import db.DB;
+
+public class Program {
+
+	public static void main(String[] args) {
+
+		DB.getConnection();
+		db.DB.closeConnection();
+		System.out.println("ok");
+		
+	}
+}
