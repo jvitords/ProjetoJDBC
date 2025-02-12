@@ -16,6 +16,6 @@ public class Program {
 		Funcionario funcionario = new Funcionario(21, "João", "joao@gmail.com", new Date(), 3500.0, dpt1);
 		//System.out.println(funcionario);
 		
-		DaoFabrica.createFuncionarioDao().insert(funcionario);
+		FuncionarioDao funcionarioDao = DaoFabrica.createFuncionarioDao();
 	}
 }

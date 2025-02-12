@@ -1,0 +1,35 @@
+package model.dao.impl;
+
+import java.util.List;
+
+import model.dao.FuncionarioDao;
+import model.entities.Funcionario;
+
+public class FuncionarioDaoJDBC implements FuncionarioDao{
+
+	@Override
+	public void insert(Funcionario funcionario) {
+		
+	}
+
+	@Override
+	public void update(Funcionario funcionario) {
+		
+	}
+
+	@Override
+	public void delete(Funcionario funcionario) {
+		
+	}
+
+	@Override
+	public Funcionario encontrarFuncionarioAtravesDoId(Integer id) {
+		return null;
+	}
+
+	@Override
+	public List<Funcionario> encontrarTodosFuncionarios() {
+		return null;
+	}
+
+}
