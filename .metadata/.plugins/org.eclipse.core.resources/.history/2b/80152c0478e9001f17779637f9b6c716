@@ -8,7 +8,7 @@ public class Program {
 	public static void main(String[] args) {
 
 		Departamento dpt = new Departamento("TI", 1);
-		System.out.println(dpt);
+		dpt.toString();
 		
 	}
 }
