@@ -5,7 +5,7 @@ import java.util.Objects;
 
 public class Departamento implements Serializable{
 
-	private static final long serialVersionUID = 1L; // serve para transformar os dados em bytes
+	private static final long serialVersionUID = 1L;
 	
 	private String nomeDoDepartamento;
 	private int idDoDepartamento;

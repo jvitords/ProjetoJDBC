@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import db.DB;
 import db.DBException;
 import model.dao.FuncionarioDao;
 import model.entities.Departamento;
@@ -45,33 +44,27 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
 		 e as informações do departamento dele */ 
 		 
-		 try {
-			 
-			 consultaSQL = conexao.prepareStatement(
+		 		try {
+			consultaSQL = conexao.prepareStatement(
 					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
 							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?;");
-			 consultaSQL.setInt(1, id);
+			consultaSQL.setInt(1, id);
 
-			 resultadoSQL = consultaSQL.executeQuery();
-			 if (resultadoSQL.next()) { // confere se tem algo na próxima linha(que no caso é a primeira) do "resultadoSQL"
-				 
-				 Departamento departamento = new Departamento(resultadoSQL.getString("DepName"), 
+			resultadoSQL = consultaSQL.executeQuery();
+			if (resultadoSQL.next()) { // confere se tem algo na próxima linha(que no caso é a primeira) do "resultadoSQL"
+				
+				Departamento departamento = new Departamento(resultadoSQL.getString("DepName"), 
 						resultadoSQL.getInt("DepartmentId")); // instanciando o departamento com nome e id recebido da consulta  SQL
 				
-				 Funcionario funcionario = new Funcionario(resultadoSQL.getInt("Id"), resultadoSQL.getString("Name"), 
-						resultadoSQL.getString("Email"), resultadoSQL.getDate("BirthDate"), resultadoSQL.getDouble("BaseSalary"), 
-						departamento); // instanciando o funcionario
-				 return funcionario;
-			 }
-			 return null;
+				Funcionario funcionario = new Funcionario(resultadoSQL.getInt("Id"), resultadoSQL.getString("Name"), 
+						resultadoSQL.getString("Email"), resultadoSQL.getDate("BirthDate"), resultadoSQL.getDouble("BaseSalary"), departamento);
+				return funcionario;
+			}
+			return null;
+		} catch (SQLException e) {
+			throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
 		}
-		 catch (SQLException e) {
-			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
-		 }
-		 finally {
-			DB.closeStatement(consultaSQL);
-			DB.closeResultSet(resultadoSQL);
-		}
+
 	}
 
 	@Override

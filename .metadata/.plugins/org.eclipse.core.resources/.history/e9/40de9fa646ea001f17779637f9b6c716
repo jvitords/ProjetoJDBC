@@ -13,7 +13,7 @@ public class Program {
 
 	public static void main(String[] args) {
 
-		FuncionarioDao funcionarioDao = DaoFabrica.createFuncionarioDao();
-		System.out.println(funcionarioDao.encontrarFuncionarioAtravesDoId(7));
+		FuncionarioDao funcionarioDao = new FuncionarioDaoJDBC(DB.getConnection());
+		funcionarioDao.encontrarFuncionarioAtravesDoId(7);
 	}
 }
