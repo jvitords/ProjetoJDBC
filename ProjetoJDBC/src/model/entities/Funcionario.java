@@ -9,7 +9,7 @@ public class Funcionario implements Serializable{
 	
 	private static final long serialVersionUID = 1L; // serve para transformar os dados em bytes
 	
-	private int idDoFuncionario;
+	private Integer idDoFuncionario;
 	private String nomeDoFuncionario;
 	private String emailDoFuncionario;
 	private Date nascimentoDoFuncionario;
@@ -19,7 +19,7 @@ public class Funcionario implements Serializable{
 	public Funcionario() {
 	}
 	
-	public Funcionario(int idDoFuncionario, String nomeDoFuncionario, String emailDoFuncionario,
+	public Funcionario(Integer idDoFuncionario, String nomeDoFuncionario, String emailDoFuncionario,
 			Date nascimentoDoFuncionario, Double salarioeDoFuncionario, Departamento departamentoDoFuncionario) {
 		this.idDoFuncionario = idDoFuncionario;
 		this.nomeDoFuncionario = nomeDoFuncionario;

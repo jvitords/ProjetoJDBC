@@ -1,0 +1,212 @@
+package model.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import db.DB;
+import db.DBException;
+import model.dao.FuncionarioDao;
+import model.entities.Departamento;
+import model.entities.Funcionario;
+
+public class FuncionarioDaoJDBC implements FuncionarioDao {
+
+	private Connection conexao;
+
+	public FuncionarioDaoJDBC(Connection conexao) {
+		this.conexao = conexao;
+	}
+
+	@Override
+	public void insert(Funcionario funcionario) {
+		
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		Connection conexao = null;
+		
+		try {
+			conexao = DB.getConnection();
+			consultaSQL =  conexao.prepareStatement("INSERT INTO seller "
+					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			consultaSQL.setString(1, funcionario.getNomeDoFuncionario());
+			consultaSQL.setString(2, funcionario.getEmailDoFuncionario());
+			consultaSQL.setDate(3, new java.sql.Date(funcionario.getNascimentoDoFuncionario().getDate()));
+			consultaSQL.setDouble(4, funcionario.getSalarioeDoFuncionario());
+			consultaSQL.setInt(5, funcionario.getDepartamentoDoFuncionario().getIdDoDepartamento());
+			
+			int linhasAlteradas = consultaSQL.executeUpdate();
+			ResultSet chaveGerada = consultaSQL.getGeneratedKeys();
+			if(linhasAlteradas < 1) {
+				System.out.println("INSERT deu falha!");
+			}
+			else {
+				int numeroDoID = chaveGerada.getInt(1);
+				System.out.println("INSERT realizado com sucesso! Funcionário de ID: " + chaveGerada + " foi registrado");
+			}
+		} 
+		catch (SQLException e) {
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
+		}
+		catch (Exception e) {
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
+		}
+		finally {
+			DB.closeStatement(consultaSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+		
+	}
+
+	@Override
+	public void update(Funcionario funcionario) {
+
+	}
+
+	@Override
+	public void delete(Funcionario funcionario) {
+
+	}
+
+	@Override
+	public Funcionario encontrarFuncionarioAtravesDoId(Integer id) {
+
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		
+		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
+		 e as informações do departamento dele */ 
+		 try {
+			 consultaSQL = conexao.prepareStatement(
+					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
+							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?;");
+			 consultaSQL.setInt(1, id);
+
+			 resultadoSQL = consultaSQL.executeQuery();
+			 if (resultadoSQL.next()) { // confere se tem algo na próxima linha(que no caso é a primeira) do "resultadoSQL"
+				 
+				 Departamento departamento = instanciarDepartamento(resultadoSQL);
+				
+				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, instanciarDepartamento(resultadoSQL));
+				 return funcionario;
+			 }
+			 return null;
+		}
+		 catch (SQLException e) {
+			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
+		 }
+		 finally {
+			DB.closeStatement(consultaSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+	}
+	
+	@Override
+	public List<Funcionario> encontrarFuncionariosDeUmDepartamento(Departamento departamentoEscolhido) {
+		
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		List<Funcionario> lista = new ArrayList<Funcionario>();
+		
+		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
+		 e as informações do departamento dele */ 
+		 try {
+			 consultaSQL = conexao.prepareStatement(
+					"SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "WHERE DepartmentId = ? "
+					+ "ORDER BY Name;");
+			 
+			 consultaSQL.setInt(1, departamentoEscolhido.getIdDoDepartamento());
+			 resultadoSQL = consultaSQL.executeQuery();
+			 Map<Integer, Departamento> map = new HashMap<Integer, Departamento>();
+			 
+			 while (resultadoSQL.next()) { // confere se tem algo na próxima linha(como se fosse um ForEach
+				 
+				 Departamento departamento = map.get(resultadoSQL.getObject("DepartmentId"));
+				 if (departamento == null) {
+					 departamento = instanciarDepartamento(resultadoSQL);
+				 }
+				 
+				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, departamento);
+				 lista.add(funcionario);
+			 }
+			 return lista;
+		}
+		 catch (SQLException e) {
+			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
+		 }
+		 finally {
+			DB.closeStatement(consultaSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+	}
+
+	@Override
+	public List<Funcionario> encontrarTodosFuncionarios() {
+
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		List<Funcionario> lista = new ArrayList<Funcionario>();
+		
+		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
+		 e as informações do departamento dele */ 
+		 try {
+			 consultaSQL = conexao.prepareStatement(
+					"SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "ORDER BY Name;");
+			 
+			 resultadoSQL = consultaSQL.executeQuery();
+			 Map<Integer, Departamento> map = new HashMap<Integer, Departamento>();
+			 
+			 while (resultadoSQL.next()) { // confere se tem algo na próxima linha(como se fosse um ForEach
+				 
+				 Departamento departamento = map.get(resultadoSQL.getObject("DepartmentId"));
+				 if (departamento == null) {
+					 departamento = instanciarDepartamento(resultadoSQL);
+				 }
+				 
+				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, departamento);
+				 lista.add(funcionario);
+			 }
+			 return lista;
+		}
+		 catch (SQLException e) {
+			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
+		 }
+		 finally {
+			DB.closeStatement(consultaSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+		
+	}
+
+	private Departamento instanciarDepartamento(ResultSet resultadoSQL) throws SQLException {
+		// instanciando o departamento com nome e id recebido da consulta  SQL(resultadoSQL)
+		Departamento departamento = new Departamento(resultadoSQL.getString("DepName"), resultadoSQL.getInt("DepartmentId"));
+		return departamento;
+	}
+	
+	private Funcionario instanciarFuncionario(ResultSet resultadoSQL, Departamento departamento) throws SQLException {
+		// instanciando o funcionario informações recebidas da consulta  SQL(resultadoSQL)
+		Funcionario funcionario = new Funcionario(resultadoSQL.getInt("Id"), resultadoSQL.getString("Name"), 
+				resultadoSQL.getString("Email"), resultadoSQL.getDate("BirthDate"), resultadoSQL.getDouble("BaseSalary"), 
+				departamento);
+		return funcionario;
+	}
+
+	
+	
+}

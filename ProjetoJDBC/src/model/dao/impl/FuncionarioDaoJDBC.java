@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,49 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 
 	@Override
 	public void insert(Funcionario funcionario) {
-
+		
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		Connection conexao = null;
+		
+		try {
+			conexao = DB.getConnection();
+			consultaSQL =  conexao.prepareStatement("INSERT INTO seller "
+					+ "(Name, Email, BirthDate, BaseSalary, DepartmentId) "
+					+ "VALUES "
+					+ "(?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+			consultaSQL.setString(1, funcionario.getNomeDoFuncionario());
+			consultaSQL.setString(2, funcionario.getEmailDoFuncionario());
+			consultaSQL.setDate(3, new java.sql.Date(funcionario.getNascimentoDoFuncionario().getTime()));
+			consultaSQL.setDouble(4, funcionario.getSalarioeDoFuncionario());
+			consultaSQL.setInt(5, funcionario.getDepartamentoDoFuncionario().getIdDoDepartamento());
+			
+			int linhasAlteradas = consultaSQL.executeUpdate();
+			
+			if(linhasAlteradas < 1) {
+				System.out.println("INSERT deu falha!");
+			}
+			else {
+				ResultSet chaveGerada = consultaSQL.getGeneratedKeys();
+				if (chaveGerada.next()) {
+					int id = chaveGerada.getInt(1);
+					funcionario.setIdDoFuncionario(id);
+				}
+				DB.closeResultSet(resultadoSQL);
+				System.out.println("INSERT realizado com sucesso! Funcionário de ID: " + funcionario.getIdDoFuncionario() + " foi registrado");
+			}
+		} 
+		catch (SQLException e) {
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
+		}
+		catch (Exception e) {
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
+		}
+		finally {
+			DB.closeStatement(consultaSQL);
+		
+		}
+		
 	}
 
 	@Override
