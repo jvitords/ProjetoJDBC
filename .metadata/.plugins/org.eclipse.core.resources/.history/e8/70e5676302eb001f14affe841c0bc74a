@@ -26,6 +26,6 @@ public class Program {
 		
 		System.out.println("\n===== TODOS OS FUNCIONÁRIOS =====");
 		List<Funcionario> lista2 = funcionarioDao.encontrarTodosFuncionarios();
-		lista2.forEach(f -> System.out.println("Nome: " + f.getNomeDoFuncionario() + ", " + f.getDepartamentoDoFuncionario().getNomeDoDepartamento()));
+		lista1.forEach(f -> System.out.println("Nome: " + f.getNomeDoFuncionario()));
 	}
 }

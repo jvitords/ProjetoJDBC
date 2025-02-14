@@ -115,43 +115,7 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 
 	@Override
 	public List<Funcionario> encontrarTodosFuncionarios() {
-
-		PreparedStatement consultaSQL = null;
-		ResultSet resultadoSQL = null;
-		List<Funcionario> lista = new ArrayList<Funcionario>();
-		
-		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
-		 e as informações do departamento dele */ 
-		 try {
-			 consultaSQL = conexao.prepareStatement(
-					"SELECT seller.*,department.Name as DepName "
-					+ "FROM seller INNER JOIN department "
-					+ "ON seller.DepartmentId = department.Id "
-					+ "ORDER BY Name;");
-			 
-			 resultadoSQL = consultaSQL.executeQuery();
-			 Map<Integer, Departamento> map = new HashMap<Integer, Departamento>();
-			 
-			 while (resultadoSQL.next()) { // confere se tem algo na próxima linha(como se fosse um ForEach
-				 
-				 Departamento departamento = map.get(resultadoSQL.getObject("DepartmentId"));
-				 if (departamento == null) {
-					 departamento = instanciarDepartamento(resultadoSQL);
-				 }
-				 
-				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, departamento);
-				 lista.add(funcionario);
-			 }
-			 return lista;
-		}
-		 catch (SQLException e) {
-			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
-		 }
-		 finally {
-			DB.closeStatement(consultaSQL);
-			DB.closeResultSet(resultadoSQL);
-		}
-		
+		return null;
 	}
 
 	private Departamento instanciarDepartamento(ResultSet resultadoSQL) throws SQLException {

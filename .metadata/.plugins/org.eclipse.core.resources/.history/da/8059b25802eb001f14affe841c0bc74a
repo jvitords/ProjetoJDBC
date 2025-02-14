@@ -25,7 +25,7 @@ public class Program {
 		lista1.forEach(f -> System.out.println("Nome: " + f.getNomeDoFuncionario()));
 		
 		System.out.println("\n===== TODOS OS FUNCIONÁRIOS =====");
-		List<Funcionario> lista2 = funcionarioDao.encontrarTodosFuncionarios();
-		lista2.forEach(f -> System.out.println("Nome: " + f.getNomeDoFuncionario() + ", " + f.getDepartamentoDoFuncionario().getNomeDoDepartamento()));
+		List<Funcionario> lista2 = funcionarioDao.encontrarFuncionariosDeUmDepartamento(new Departamento(null, 1));
+		lista1.forEach(f -> System.out.println("Nome: " + f.getNomeDoFuncionario()));
 	}
 }
