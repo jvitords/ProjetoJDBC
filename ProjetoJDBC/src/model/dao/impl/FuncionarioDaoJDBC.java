@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import db.DB;
 import db.DBException;
@@ -41,12 +44,9 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 		PreparedStatement consultaSQL = null;
 		ResultSet resultadoSQL = null;
 		
-		
 		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
 		 e as informações do departamento dele */ 
-		 
 		 try {
-			 
 			 consultaSQL = conexao.prepareStatement(
 					"SELECT seller.*,department.Name as DepName " + "FROM seller INNER JOIN department "
 							+ "ON seller.DepartmentId = department.Id " + "WHERE seller.Id = ?;");
@@ -55,15 +55,54 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 			 resultadoSQL = consultaSQL.executeQuery();
 			 if (resultadoSQL.next()) { // confere se tem algo na próxima linha(que no caso é a primeira) do "resultadoSQL"
 				 
-				 Departamento departamento = new Departamento(resultadoSQL.getString("DepName"), 
-						resultadoSQL.getInt("DepartmentId")); // instanciando o departamento com nome e id recebido da consulta  SQL
+				 Departamento departamento = instanciarDepartamento(resultadoSQL);
 				
-				 Funcionario funcionario = new Funcionario(resultadoSQL.getInt("Id"), resultadoSQL.getString("Name"), 
-						resultadoSQL.getString("Email"), resultadoSQL.getDate("BirthDate"), resultadoSQL.getDouble("BaseSalary"), 
-						departamento); // instanciando o funcionario
+				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, instanciarDepartamento(resultadoSQL));
 				 return funcionario;
 			 }
 			 return null;
+		}
+		 catch (SQLException e) {
+			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
+		 }
+		 finally {
+			DB.closeStatement(consultaSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+	}
+	
+	@Override
+	public List<Funcionario> encontrarFuncionariosDeUmDepartamento(Departamento departamentoEscolhido) {
+		
+		PreparedStatement consultaSQL = null;
+		ResultSet resultadoSQL = null;
+		List<Funcionario> lista = new ArrayList<Funcionario>();
+		
+		/* Com essa consulta abaixo, consigo pegar as informações de um funcionario com certo ID, 
+		 e as informações do departamento dele */ 
+		 try {
+			 consultaSQL = conexao.prepareStatement(
+					"SELECT seller.*,department.Name as DepName "
+					+ "FROM seller INNER JOIN department "
+					+ "ON seller.DepartmentId = department.Id "
+					+ "WHERE DepartmentId = ? "
+					+ "ORDER BY Name;");
+			 
+			 consultaSQL.setInt(1, departamentoEscolhido.getIdDoDepartamento());
+			 resultadoSQL = consultaSQL.executeQuery();
+			 Map<Integer, Departamento> map = new HashMap<Integer, Departamento>();
+			 
+			 while (resultadoSQL.next()) { // confere se tem algo na próxima linha(como se fosse um ForEach
+				 
+				 Departamento departamento = map.get(resultadoSQL.getObject("DepartmentId"));
+				 if (departamento == null) {
+					 departamento = instanciarDepartamento(resultadoSQL);
+				 }
+				 
+				 Funcionario funcionario = instanciarFuncionario(resultadoSQL, departamento);
+				 lista.add(funcionario);
+			 }
+			 return lista;
 		}
 		 catch (SQLException e) {
 			 throw new DBException("Erro ao filtrar funcionário através do ID. " + e.getMessage());
@@ -79,4 +118,20 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 		return null;
 	}
 
+	private Departamento instanciarDepartamento(ResultSet resultadoSQL) throws SQLException {
+		// instanciando o departamento com nome e id recebido da consulta  SQL(resultadoSQL)
+		Departamento departamento = new Departamento(resultadoSQL.getString("DepName"), resultadoSQL.getInt("DepartmentId"));
+		return departamento;
+	}
+	
+	private Funcionario instanciarFuncionario(ResultSet resultadoSQL, Departamento departamento) throws SQLException {
+		// instanciando o funcionario informações recebidas da consulta  SQL(resultadoSQL)
+		Funcionario funcionario = new Funcionario(resultadoSQL.getInt("Id"), resultadoSQL.getString("Name"), 
+				resultadoSQL.getString("Email"), resultadoSQL.getDate("BirthDate"), resultadoSQL.getDouble("BaseSalary"), 
+				departamento);
+		return funcionario;
+	}
+
+	
+	
 }
