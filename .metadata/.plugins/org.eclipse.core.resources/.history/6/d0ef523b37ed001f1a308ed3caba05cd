@@ -121,13 +121,8 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 			instrucaoSQL = conexao.prepareStatement("DELETE FROM seller "
 					+ "WHERE Id = ?");
 			instrucaoSQL.setInt(1, id);
-			int linhasAfetadas = instrucaoSQL.executeUpdate();
-			if(linhasAfetadas == 0) {
-				System.out.println("ID não encontrado!");
-			}
-			else {
-				System.out.println("Funcionário deletado!");
-			}
+			instrucaoSQL.executeUpdate();
+			System.out.println("Funcionário deletado!");
 		} 
 		catch (SQLException e) {
 			throw new DBException("Erro ao remover funcionário");

@@ -40,12 +40,8 @@ public class Program {
 		funcionarioDao.insert(funcionarioInsert);
 		*/
 		
-		/*
 		Funcionario funcionario = funcionarioDao.encontrarFuncionarioAtravesDoId(7);
 		funcionario.setEmailDoFuncionario("jvduarte@gmail.com");
 		funcionarioDao.update(funcionario);
-		*/
-		
-		funcionarioDao.delete(20);
 	}
 }

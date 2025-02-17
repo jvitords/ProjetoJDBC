@@ -46,6 +46,6 @@ public class Program {
 		funcionarioDao.update(funcionario);
 		*/
 		
-		funcionarioDao.delete(20);
+		funcionarioDao.delete(6);
 	}
 }

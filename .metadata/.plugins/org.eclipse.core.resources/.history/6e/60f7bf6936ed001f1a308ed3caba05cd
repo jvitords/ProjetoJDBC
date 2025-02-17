@@ -9,7 +9,7 @@ public interface FuncionarioDao {
 	
 	void insert(Funcionario funcionario);
 	void update(Funcionario funcionario);
-	void delete(Integer id);
+	void delete(Funcionario funcionario);
 	Funcionario encontrarFuncionarioAtravesDoId(Integer id);
 	List<Funcionario> encontrarTodosFuncionarios();
 	List<Funcionario> encontrarFuncionariosDeUmDepartamento(Departamento departamento);
