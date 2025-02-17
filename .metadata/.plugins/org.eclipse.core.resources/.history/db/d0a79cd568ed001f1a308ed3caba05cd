@@ -29,6 +29,7 @@ public class DepartamentoDaoJDBC implements DepartamentoDao{
 	public void insert(String nomeDoDepartamento) {
 		
 		PreparedStatement instrucaoSQL = null;
+		
 		try {
 			instrucaoSQL = conexao.prepareStatement("INSERT INTO department "
 					+ "(Name) VALUE (?)", Statement.RETURN_GENERATED_KEYS);
