@@ -1,0 +1,50 @@
+package model.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.util.List;
+
+import model.dao.DepartamentoDao;
+import model.entities.Departamento;
+
+public class DepartamentoDaoJDBC implements DepartamentoDao{
+
+	private Connection conexao;
+	
+	public DepartamentoDaoJDBC(Connection conexao) {
+		super();
+		this.conexao = conexao;
+	}
+
+	@Override
+	public void insert(Departamento Departamento) {
+		
+		PreparedStatement instrucaoSQL = null;
+		
+	}
+
+	@Override
+	public void update(Departamento Departamento) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Departamento Departamento) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Departamento encontrarDepartamentoAtravesDoId(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Departamento> encontrarTodosDepartamentos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

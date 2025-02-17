@@ -1,0 +1,161 @@
+package model.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import db.DB;
+import db.DBException;
+import model.dao.DaoFabrica;
+import model.dao.DepartamentoDao;
+import model.entities.Departamento;
+
+public class DepartamentoDaoJDBC implements DepartamentoDao{
+
+	private Connection conexao;
+	
+	public DepartamentoDaoJDBC(Connection conexao) {
+		this.conexao = conexao;
+	}
+
+	@Override
+	public void insert(String nomeDoDepartamento) {
+		
+		PreparedStatement instrucaoSQL = null;
+		
+		try {
+			instrucaoSQL = conexao.prepareStatement("INSERT INTO department "
+					+ "(Name) VALUE (?)", Statement.RETURN_GENERATED_KEYS);
+			instrucaoSQL.setString(1, nomeDoDepartamento);
+			int linhasAlteradas = instrucaoSQL.executeUpdate();
+			if(linhasAlteradas > 0) {
+				ResultSet chaveGerada = instrucaoSQL.getGeneratedKeys();
+				if(chaveGerada.next()) {
+					int id = chaveGerada.getInt(1);
+					System.out.println("INSERT realizado com sucesso! ID " + id + " gerado com sucesso.");
+				}
+			}
+			else {
+				System.out.println("Nehnhuma linha foi inserida.");
+			}
+		} 
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			DB.closeStatement(instrucaoSQL);
+		}
+	}
+
+	@Override
+	public void update(Integer id, String nomeDoDepartamento) {
+		
+		PreparedStatement instrucaoSQL = null;
+		try {
+			instrucaoSQL = conexao.prepareStatement("UPDATE department SET Name = ? WHERE (Id = ?)");
+			instrucaoSQL.setString(1, nomeDoDepartamento);
+			instrucaoSQL.setInt(2, id);
+			
+			int linhasAfetadas = instrucaoSQL.executeUpdate();
+			if(linhasAfetadas == 0) {
+				System.out.println("Departamento não encontrado");
+			}
+			else {
+				System.out.println("Departamento atualizado!");
+			}
+		} 
+		catch (Exception e) {
+			throw new DBException("Erro no UPDATE.");
+		}
+		finally {
+			DB.closeStatement(instrucaoSQL);
+		}
+	}
+
+	@Override
+	public void delete(Integer id) {
+		
+		PreparedStatement instrucaoSQL = null;
+		try {
+			instrucaoSQL = conexao.prepareStatement("DELETE from department WHERE Id = ?");
+			instrucaoSQL.setInt(1, id);
+			int linhasRemovidas = instrucaoSQL.executeUpdate();
+			if(linhasRemovidas == 0) {
+				System.out.println("Nenhuma  linha foi removida");
+			}
+			else {
+				System.out.println("Departamento removido com sucesso!");
+			}
+		} 
+		catch (Exception e) {
+			throw new DBException("Erro ao deletar o departamento.");
+		}
+		finally {
+			DB.closeStatement(instrucaoSQL);
+		}
+	}
+
+	@Override
+	public Departamento encontrarDepartamentoAtravesDoId(Integer id) {
+		
+		PreparedStatement instrucaoSQL = null;
+		ResultSet resultadoSQL = null;
+		
+		try {
+			instrucaoSQL = conexao.prepareStatement("SELECT * FROM cursojdbc.department where Id = ?");
+			instrucaoSQL.setInt(1, id);
+			resultadoSQL = instrucaoSQL.executeQuery();
+			if(resultadoSQL.next()) {
+				Departamento departamento = instanciarDepartamento(resultadoSQL);
+				return departamento;
+			}
+			else {
+				System.out.println("Nenhum departamento encontrado!");
+				return null;
+			}
+		} 
+		catch (Exception e) {
+			throw new DBException("Erro ao encontrar depatamento.");
+		}
+		finally {
+			DB.closeStatement(instrucaoSQL);
+			DB.closeResultSet(resultadoSQL);
+		}
+	}
+
+	@Override
+	public List<Departamento> encontrarTodosDepartamentos() {
+		PreparedStatement instrucaoSQL = null;
+		ResultSet resultadoSQL = null;
+		List<Departamento> listaDeDepartamentos = new ArrayList<Departamento>();
+		
+		try {
+			instrucaoSQL = conexao.prepareStatement("SELECT * FROM department");
+			resultadoSQL = instrucaoSQL.executeQuery();
+			while (resultadoSQL.next()) {
+				Departamento departamento = instanciarDepartamento(resultadoSQL);
+				listaDeDepartamentos.add(departamento);
+			}
+			if(listaDeDepartamentos.size() == 0) {
+				return null;
+			}
+			return listaDeDepartamentos;
+		} 
+		catch (Exception e) {
+			throw new DBException("Erro ao encontrar os departamentos.");
+		}
+	}
+
+	private Departamento instanciarDepartamento(ResultSet resultadoSQL) throws SQLException {
+		int id = resultadoSQL.getInt("Id");
+		String nome = resultadoSQL.getString("Name");
+		return new Departamento(nome, id);
+	}
+}

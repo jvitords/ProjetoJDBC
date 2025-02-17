@@ -1,0 +1,15 @@
+package application;
+
+import model.dao.DaoFabrica;
+import model.dao.DepartamentoDao;
+
+public class Program2 {
+
+	public static void main(String[] args) {
+		
+		DepartamentoDao departamento = DaoFabrica.createDepartamentoDao();
+		
+		departamento.insert(null);
+	}
+
+}

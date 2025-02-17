@@ -42,7 +42,7 @@ public class Program {
 		
 		/*
 		Funcionario funcionario = funcionarioDao.encontrarFuncionarioAtravesDoId(7);
-		funcionario.setEmailDoFuncionario("jvduarte@gmail.com");
+		funcionario.setEmailDoFuncionario("jvduarte.santos@gmail.com");
 		funcionarioDao.update(funcionario);
 		*/
 		

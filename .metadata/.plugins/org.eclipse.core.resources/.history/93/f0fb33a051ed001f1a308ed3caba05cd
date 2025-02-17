@@ -1,0 +1,82 @@
+package model.dao.impl;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+import db.DBException;
+import model.dao.DepartamentoDao;
+import model.entities.Departamento;
+
+public class DepartamentoDaoJDBC implements DepartamentoDao{
+
+	private Connection conexao;
+	
+	public DepartamentoDaoJDBC(Connection conexao) {
+		this.conexao = conexao;
+	}
+
+	@Override
+	public void insert(String nomeDoDepartamento) {
+		
+		PreparedStatement instrucaoSQL = null;
+		ResultSet resultadoSQL = null;
+		
+		try {
+			instrucaoSQL = conexao.prepareStatement("INSERT INTO department "
+					+ "(Name) VALUE (?)", instrucaoSQL.RETURN_GENERATED_KEYS);
+			instrucaoSQL.setString(1, nomeDoDepartamento);
+			int linhasAlteradas = instrucaoSQL.executeUpdate();
+			
+			resultadoSQL = instrucaoSQL.getGeneratedKeys();
+			int id = resultadoSQL.getInt(1);
+			System.out.println("INSERT realizado com sucesso! ID " + resultadoSQL + " gerado com sucesso.");
+		} 
+		catch (SQLException e) {
+			throw new DBException("Erro ao fazer INSERT do departamento.");
+		}
+	}
+
+	@Override
+	public void update(Integer id, String nomeDoDepartamento) {
+		
+		PreparedStatement instrucaoSQL = null;
+		try {
+			instrucaoSQL = conexao.prepareStatement("UPDATE department SET Name = ? WHERE (Id = ?)");
+			instrucaoSQL.setString(1, nomeDoDepartamento);
+			instrucaoSQL.setInt(2, id);
+			
+			int linhasAfetadas = instrucaoSQL.executeUpdate();
+			if(linhasAfetadas == 0) {
+				System.out.println("Departamento não encontrado");
+			}
+			else {
+				System.out.println("Departamento atualizado!");
+			}
+		} 
+		catch (Exception e) {
+			
+		}
+	}
+
+	@Override
+	public void delete(Departamento Departamento) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Departamento encontrarDepartamentoAtravesDoId(Integer id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Departamento> encontrarTodosDepartamentos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

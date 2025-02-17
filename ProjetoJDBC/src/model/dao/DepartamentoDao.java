@@ -6,9 +6,9 @@ import model.entities.Departamento;
 
 public interface DepartamentoDao {
 
-	void insert(Departamento Departamento);
-	void update(Departamento Departamento);
-	void delete(Departamento Departamento);
+	void insert(String nome);
+	void update(Integer id, String nomeDoDepartamento);
+	void delete(Integer id);
 	Departamento encontrarDepartamentoAtravesDoId(Integer id);
 	List<Departamento> encontrarTodosDepartamentos();
 }
