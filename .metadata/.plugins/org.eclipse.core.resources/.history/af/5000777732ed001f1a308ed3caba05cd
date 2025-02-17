@@ -89,22 +89,27 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 			consultaSQL.setDate(3, new java.sql.Date(funcionario.getNascimentoDoFuncionario().getTime()));
 			consultaSQL.setDouble(4, funcionario.getSalarioeDoFuncionario());
 			consultaSQL.setInt(5, funcionario.getDepartamentoDoFuncionario().getIdDoDepartamento());
-			consultaSQL.setInt(6, funcionario.getIdDoFuncionario());			
+			
 			int linhasAlteradas = consultaSQL.executeUpdate();
 			
 			if(linhasAlteradas < 1) {
-				System.out.println("UPDATE deu falha!");
+				System.out.println("INSERT deu falha!");
 			}
 			else {
-				System.out.println("UPDATE realizado com sucesso!");
+				ResultSet chaveGerada = consultaSQL.getGeneratedKeys();
+				if (chaveGerada.next()) {
+					int id = chaveGerada.getInt(1);
+					funcionario.setIdDoFuncionario(id);
+				}
+				DB.closeResultSet(resultadoSQL);
+				System.out.println("INSERT realizado com sucesso! Funcionário de ID: " + funcionario.getIdDoFuncionario() + " foi registrado");
 			}
-			
 		} 
 		catch (SQLException e) {
-			throw new DBException("Erro ao fazer UPDATE no banco de dados..." + e.getMessage());
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
 		}
 		catch (Exception e) {
-			throw new DBException("Erro ao fazer UPDATE no banco de dados..." + e.getMessage());
+			throw new DBException("Erro ao fazer INSERT no banco de dados..." + e.getMessage());
 		}
 		finally {
 			DB.closeStatement(consultaSQL);

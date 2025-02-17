@@ -75,41 +75,6 @@ public class FuncionarioDaoJDBC implements FuncionarioDao {
 	@Override
 	public void update(Funcionario funcionario) {
 
-		PreparedStatement consultaSQL = null;
-		ResultSet resultadoSQL = null;
-		Connection conexao = null;
-		
-		try {
-			conexao = DB.getConnection();
-			consultaSQL =  conexao.prepareStatement("UPDATE seller " + 
-					"SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
-							"WHERE Id = ?");
-			consultaSQL.setString(1, funcionario.getNomeDoFuncionario());
-			consultaSQL.setString(2, funcionario.getEmailDoFuncionario());
-			consultaSQL.setDate(3, new java.sql.Date(funcionario.getNascimentoDoFuncionario().getTime()));
-			consultaSQL.setDouble(4, funcionario.getSalarioeDoFuncionario());
-			consultaSQL.setInt(5, funcionario.getDepartamentoDoFuncionario().getIdDoDepartamento());
-			consultaSQL.setInt(6, funcionario.getIdDoFuncionario());			
-			int linhasAlteradas = consultaSQL.executeUpdate();
-			
-			if(linhasAlteradas < 1) {
-				System.out.println("UPDATE deu falha!");
-			}
-			else {
-				System.out.println("UPDATE realizado com sucesso!");
-			}
-			
-		} 
-		catch (SQLException e) {
-			throw new DBException("Erro ao fazer UPDATE no banco de dados..." + e.getMessage());
-		}
-		catch (Exception e) {
-			throw new DBException("Erro ao fazer UPDATE no banco de dados..." + e.getMessage());
-		}
-		finally {
-			DB.closeStatement(consultaSQL);
-		
-		}
 	}
 
 	@Override

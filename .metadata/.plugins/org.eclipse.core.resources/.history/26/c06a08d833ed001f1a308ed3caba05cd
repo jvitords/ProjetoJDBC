@@ -33,15 +33,10 @@ public class Program {
 		*/
 		
 		SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy");
-		
-		/*Funcionario funcionarioInsert = new Funcionario(null, "Ana Beatriz Tavares", "anabea@gmail.com", 
+		Funcionario funcionarioInsert = new Funcionario(null, "Ana Beatriz Tavares", "anabea@gmail.com", 
 				new java.sql.Date(formatoData.parse("14/03/2005").getTime()), 1500.0, new Departamento(null, 3));
 		//System.out.println(funcionarioInsert.getNascimentoDoFuncionario());
 		funcionarioDao.insert(funcionarioInsert);
-		*/
 		
-		Funcionario funcionario = funcionarioDao.encontrarFuncionarioAtravesDoId(7);
-		funcionario.setEmailDoFuncionario("jvduarte@gmail.com");
-		funcionarioDao.update(funcionario);
 	}
 }

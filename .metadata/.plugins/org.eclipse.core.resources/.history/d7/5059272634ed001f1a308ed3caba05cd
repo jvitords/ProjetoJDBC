@@ -40,8 +40,8 @@ public class Program {
 		funcionarioDao.insert(funcionarioInsert);
 		*/
 		
-		Funcionario funcionario = funcionarioDao.encontrarFuncionarioAtravesDoId(7);
-		funcionario.setEmailDoFuncionario("jvduarte@gmail.com");
+		Funcionario funcionario = new Funcionario(7, "João Vitor", "joaosantos@gmail.com", 
+				new java.sql.Date(formatoData.parse("10/05/2004").getTime()), 3500.0, new Departamento(null, 1));
 		funcionarioDao.update(funcionario);
 	}
 }
